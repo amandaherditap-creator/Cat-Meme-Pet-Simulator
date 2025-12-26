@@ -28,7 +28,7 @@
         <button class="button" id="button-name">OK!</button>
     </div>
     <div class="container" id="pet-container"></div>
-    <div class="text footer hidden" id="footer">(fun tips: click "interact" 3 times in a row to special effect!)</div>
+    <div class="text footer hidden" id="footer-text">(fun tips: click "interact" 3 times in a row to show special effect!)</div>
 </body>
 
 <script>
@@ -228,7 +228,7 @@
             footerText.classList.remove("show");
         }
     }
-    
+
     function fullscreenEmote(src, duration = 3000) {
         const overlay = document.getElementById("overlay");
         const gif = document.getElementById("fullscreen-gif");
@@ -345,8 +345,8 @@
 
             pet.setName(newName);
             nameElement.textContent = pet.name;
-            updateFooterText();
             savePets();
+            updateFooterText();
         };
 
         const img = card.querySelector(".petPhoto");
@@ -378,11 +378,12 @@
 
                 const index = allPets.indexOf(pet);
                 if (index !== -1) allPets.splice(index, 1);
-                updateFooterText();
                 savePets();
+                updateFooterText();
             }
         };
         savePets();
+        updateFooterText();
         petContainer.appendChild(card);
     }
 
@@ -408,8 +409,8 @@
             if (item.type === "Uiiaiu") pet = new Uiiaiu(item.name);
 
             if (pet) renderPet(pet);
-            updateFooterText();
         });
+        updateFooterText();
     }
     loadPets();
 </script>
