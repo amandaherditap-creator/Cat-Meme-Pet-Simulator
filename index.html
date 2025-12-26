@@ -28,6 +28,7 @@
         <button class="button" id="button-name">OK!</button>
     </div>
     <div class="container" id="pet-container"></div>
+    <div class="text footer hidden" id="footer">(fun tips: click "interact" 3 times in a row to special effect!)</div>
 </body>
 
 <script>
@@ -216,7 +217,18 @@
     let soundEnabled = true;
     let lastSoundPet = null;
     let lastEmotedPet = null;
+    const footerText = document.getElementById("footer-text");
 
+    function updateFooterText() {
+        if (allPets.length > 0) {
+            footerText.classList.remove("hidden");
+            footerText.classList.add("show");
+        } else {
+            footerText.classList.add("hidden");
+            footerText.classList.remove("show");
+        }
+    }
+    
     function fullscreenEmote(src, duration = 3000) {
         const overlay = document.getElementById("overlay");
         const gif = document.getElementById("fullscreen-gif");
@@ -333,6 +345,7 @@
 
             pet.setName(newName);
             nameElement.textContent = pet.name;
+            updateFooterText();
             savePets();
         };
 
@@ -365,6 +378,7 @@
 
                 const index = allPets.indexOf(pet);
                 if (index !== -1) allPets.splice(index, 1);
+                updateFooterText();
                 savePets();
             }
         };
@@ -388,16 +402,17 @@
 
         data.forEach(item => {
             let pet;
-
             if (item.type === "HappyHappy") pet = new HappyHappy(item.name);
             if (item.type === "Banana") pet = new Banana(item.name);
             if (item.type === "HUH") pet = new HUH(item.name);
             if (item.type === "Uiiaiu") pet = new Uiiaiu(item.name);
 
             if (pet) renderPet(pet);
+            updateFooterText();
         });
     }
     loadPets();
 </script>
+
 
 </html>
