@@ -8,12 +8,21 @@
 </head>
 
 <body id="wallpaper">
+    <div id="loading-screen">
+        <div class="loading-box">
+            <p id="loading-text">Loading assets...</p>
+            <div class="progress-wrapper">
+                <div id="progress-bar"></div>
+            </div>
+            <p id="progress-percent">0%</p>
+        </div>
+    </div>
     <div id="overlay">
         <img id="fullscreen-gif" />
     </div>
     <div>
-        <button class="button" id="toggle-sound">🔊ON</button>
         <button class="button" id="toggle-mode">☀️Light Mode</button>
+        <button class="button" id="toggle-sound">🔊ON</button>
     </div>
     <h1 class="text" id="header-text">😸Your Cat Meme Pet😹</h1>
     <div class="text" id="select-text">Select your Cat!</div>
@@ -28,11 +37,88 @@
         <button class="button" id="button-name">OK!</button>
     </div>
     <div class="container" id="pet-container"></div>
-    <div class="text footer hidden" id="footer-text">(fun tips: click "interact" 3 times in a row to show special effect!)</div>
+    <div class="text footer hidden" id="footer-text">(fun tips: click "interact" 3 times in a row to show special
+        effect!)</div>
 </body>
 
 <script>
-    //====================== CLASS ==============================================
+    //====================== LOADING ASSETS ==============================================
+    document.body.classList.add("locked");
+    const ASSETS = {
+        images: [
+            // HappyHappy
+            "https://cdn.grapesjs.com/...happy-happy-cat.png",
+            "https://media.tenor.com/8tgG_KyJqqwAAAAi/happy-happy-happy-happy.gif",
+            // Banana
+            "https://cdn.grapesjs.com/...banana-cat.png",
+            "https://cdn.grapesjs.com/...banana-cat.gif",
+            // HUH
+            "https://cdn.grapesjs.com/...huh-cat.png",
+            "https://cdn.grapesjs.com/...huh-cat.gif",
+            // Uiiaiu
+            "https://cdn.grapesjs.com/...uiiaiu-cat.png",
+            "https://media.tenor.com/sbfBfp3FeY8AAAAi/oia-uia.gif",
+        ],
+        sounds: [
+            "https://www.myinstants.com/media/sounds/happy-happy-happy-song.mp3",
+            "https://www.myinstants.com/media/sounds/banana-cat-crying.mp3",
+            "https://www.myinstants.com/media/sounds/huh-cat-meme.mp3",
+            "https://www.myinstants.com/media/sounds/oiia-oiia-sound.mp3",
+        ]
+    };
+
+    const progressBar = document.getElementById("progress-bar");
+    const progressPercent = document.getElementById("progress-percent");
+
+    function preloadAssets() {
+        const total =
+            ASSETS.images.length +
+            ASSETS.sounds.length;
+
+        let loaded = 0;
+
+        function updateProgress() {
+            loaded++;
+            const percent = Math.round((loaded / total) * 100);
+            progressBar.style.width = percent + "%";
+            progressPercent.textContent = percent + "%";
+        }
+
+        const promises = [];
+
+        ASSETS.images.forEach(src => {
+            promises.push(new Promise(resolve => {
+                const img = new Image();
+                img.src = src;
+                img.onload = () => {
+                    updateProgress();
+                    resolve();
+                };
+                img.onerror = () => {
+                    updateProgress();
+                    resolve();
+                };
+            }));
+        });
+
+        ASSETS.sounds.forEach(src => {
+            promises.push(new Promise(resolve => {
+                const audio = new Audio();
+                audio.src = src;
+                audio.oncanplaythrough = () => {
+                    updateProgress();
+                    resolve();
+                };
+                audio.onerror = () => {
+                    updateProgress();
+                    resolve();
+                };
+            }));
+        });
+
+        return Promise.all(promises);
+    }
+    //================================ CLASS ==================================================
     class Pet {
         constructor(name, options) {
             this.name = name;
@@ -94,20 +180,19 @@
                 sound: "https://www.myinstants.com/media/sounds/happy-happy-happy-song.mp3",
             })
         }
+
         changeImage(img, duration = 8000) {
-            // ❗ bersihkan timeout LAMA milik IMAGE INI
             if (img._timeout) {
                 clearTimeout(img._timeout);
                 img._timeout = null;
             }
-
             img.src = this.gif;
-
             img._timeout = setTimeout(() => {
                 img.src = this.photo;
                 img._timeout = null;
             }, duration);
         }
+
         stopImage(img) {
             if (img._timeout) {
                 clearTimeout(img._timeout);
@@ -126,20 +211,19 @@
                 sound: "https://www.myinstants.com/media/sounds/banana-cat-crying.mp3",
             })
         }
+
         changeImage(img, duration = 6000) {
-            // ❗ bersihkan timeout LAMA milik IMAGE INI
             if (img._timeout) {
                 clearTimeout(img._timeout);
                 img._timeout = null;
             }
-
             img.src = this.gif;
-
             img._timeout = setTimeout(() => {
                 img.src = this.photo;
                 img._timeout = null;
             }, duration);
         }
+
         stopImage(img) {
             if (img._timeout) {
                 clearTimeout(img._timeout);
@@ -158,20 +242,19 @@
                 sound: "https://www.myinstants.com/media/sounds/huh-cat-meme.mp3",
             })
         }
+
         changeImage(img, duration = 4000) {
-            // ❗ bersihkan timeout LAMA milik IMAGE INI
             if (img._timeout) {
                 clearTimeout(img._timeout);
                 img._timeout = null;
             }
-
             img.src = this.gif;
-
             img._timeout = setTimeout(() => {
                 img.src = this.photo;
                 img._timeout = null;
             }, duration);
         }
+
         stopImage(img) {
             if (img._timeout) {
                 clearTimeout(img._timeout);
@@ -190,20 +273,19 @@
                 sound: "https://www.myinstants.com/media/sounds/oiia-oiia-sound.mp3",
             })
         }
+
         changeImage(img, duration = 6000) {
-            // ❗ bersihkan timeout LAMA milik IMAGE INI
             if (img._timeout) {
                 clearTimeout(img._timeout);
                 img._timeout = null;
             }
-
             img.src = this.gif;
-
             img._timeout = setTimeout(() => {
                 img.src = this.photo;
                 img._timeout = null;
             }, duration);
         }
+
         stopImage(img) {
             if (img._timeout) {
                 clearTimeout(img._timeout);
@@ -232,15 +314,11 @@
     function fullscreenEmote(src, duration = 3000) {
         const overlay = document.getElementById("overlay");
         const gif = document.getElementById("fullscreen-gif");
-
         if (!src) return;
-
         gif.src = src;
         overlay.classList.add("show");
-
         setTimeout(() => {
             overlay.classList.remove("show");
-
             // tunggu animasi fade-out selesai
             setTimeout(() => {
                 gif.src = "";
@@ -323,7 +401,6 @@
         `;
         //============= FUNGSI DALAM PET CARD ===============================
         const nameElement = card.querySelector(".nama");
-
         card.querySelector(".edit").onclick = () => {
             while (true) {
                 newName = prompt("Enter the new name: \n*max 12 characters");
@@ -337,12 +414,12 @@
                     continue;
                 }
                 if (newName.length > 12) {
-                    alert("The new name contains more that 12 characters. Please choose different name.")
+                    alert(
+                        "The new name contains more that 12 characters. Please choose different name.");
                     continue;
                 }
                 break;
             }
-
             pet.setName(newName);
             nameElement.textContent = pet.name;
             savePets();
@@ -351,7 +428,6 @@
 
         const img = card.querySelector(".petPhoto");
         pet._img = img;
-
         card.querySelector(".emote").onclick = () => {
             if (lastEmotedPet && lastEmotedPet !== pet) {
                 lastEmotedPet.resetEmote();
@@ -413,7 +489,17 @@
         updateFooterText();
     }
     loadPets();
-</script>
 
+    //====================== FADE IN SCREEN LOADING ================================
+    preloadAssets().then(() => {
+        const loader = document.getElementById("loading-screen");
+        loader.classList.add("hide");
+        setTimeout(() => {
+            loader.remove();
+            document.body.classList.remove("locked");
+            document.body.classList.add("loaded");
+        }, 600);
+    });
+</script>
 
 </html>
