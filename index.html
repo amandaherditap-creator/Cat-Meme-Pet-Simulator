@@ -105,10 +105,12 @@
             promises.push(new Promise(resolve => {
                 const audio = new Audio();
                 audio.src = src;
-                audio.oncanplaythrough = () => {
+
+                audio.addEventListener("loadeddata", () => {
                     updateProgress();
                     resolve();
-                };
+                });
+
                 audio.onerror = () => {
                     updateProgress();
                     resolve();
@@ -118,6 +120,19 @@
 
         return Promise.all(promises);
     }
+
+    //====================== FADE IN SCREEN LOADING ================================
+    preloadAssets().then(() => {
+        const loader = document.getElementById("loading-screen");
+        loader.classList.add("hide");
+
+        setTimeout(() => {
+            loader.remove();
+            document.body.classList.remove("locked");
+            document.body.classList.add("loaded");
+        }, 600);
+    });
+    
     //================================ CLASS ==================================================
     class Pet {
         constructor(name, options) {
@@ -503,4 +518,5 @@
 </script>
 
 </html>
+
 
